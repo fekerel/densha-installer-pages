@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Densha Installer</title>
+  <style>
+    :root {
+      --bg: #f4efe6;
+      --card: #fffaf3;
+      --text: #1e2430;
+      --muted: #5e6573;
+      --accent: #0d6b5f;
+      --accent-dark: #084c44;
+      --border: #d8cfbf;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      background: radial-gradient(circle at top, #fff7ea 0%, var(--bg) 55%, #e9e0d2 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    main {
+      width: min(760px, 100%);
+      background: color-mix(in srgb, var(--card) 92%, white 8%);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 20px 60px rgba(61, 48, 28, 0.12);
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.05;
+    }
+
+    p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin: 28px 0;
+    }
+
+    a.card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      background: white;
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    }
+
+    a.card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(13, 107, 95, 0.12);
+      border-color: var(--accent);
+    }
+
+    .label {
+      display: inline-block;
+      margin-bottom: 10px;
+      color: var(--accent);
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .title {
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    code {
+      background: #f3ecdf;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .footer {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 0.95rem;
+    }
+
+    .footer a {
+      color: var(--accent-dark);
+    }
+
+    .requirements {
+      margin-top: 28px;
+      padding: 22px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.7);
+    }
+
+    .requirements h2 {
+      margin: 0 0 12px;
+      font-size: 1.35rem;
+    }
+
+    .requirements ul {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .requirements a,
+    .footer a {
+      color: var(--accent-dark);
+      font-weight: 700;
+    }
+
+    .steps {
+      margin-top: 24px;
+      padding: 22px;
+      border: 1px dashed var(--border);
+      border-radius: 18px;
+      background: rgba(243, 236, 223, 0.6);
+    }
+
+    .steps h2 {
+      margin: 0 0 12px;
+      font-size: 1.35rem;
+    }
+
+    .steps ol {
+      margin: 0;
+      padding-left: 22px;
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Densha Installer</h1>
+    <p>
+      Windows ve macOS kullanicilari icin hazir kurulum scriptleri. Scripti indirip calistirdiginizda
+      <code>densha-oto</code> ve <code>densha-ui</code> repolari clone edilir, bagimliliklar kurulur ve
+      Playwright Chromium yuklenir. Kurulum sonrasinda ayri launcher scriptleri ile iki proje birlikte acilabilir.
+    </p>
+
+    <div class="actions">
+      <a class="card" href="./install-densha.ps1" download>
+        <div class="label">Windows</div>
+        <div class="title">install-densha.ps1</div>
+        <div>PowerShell ile tek komutluk kurulum.</div>
+      </a>
+
+      <a class="card" href="./install-densha.sh" download>
+        <div class="label">macOS</div>
+        <div class="title">install-densha.sh</div>
+        <div>Bash veya zsh ile tek komutluk kurulum.</div>
+      </a>
+
+      <a class="card" href="./start-densha.ps1" download>
+        <div class="label">Windows</div>
+        <div class="title">start-densha.ps1</div>
+        <div>densha-ui icin npm run start, densha-oto icin npm run server calistirir.</div>
+      </a>
+
+      <a class="card" href="./start-densha.sh" download>
+        <div class="label">macOS</div>
+        <div class="title">start-densha.sh</div>
+        <div>Iki projeyi ayri Terminal pencerelerinde baslatir.</div>
+      </a>
+
+      <a class="card" href="./README.md">
+        <div class="label">Dokumantasyon</div>
+        <div class="title">README.md</div>
+        <div>Kullanim ve dagitim notlari.</div>
+      </a>
+    </div>
+
+    <section class="requirements">
+      <h2>Gerekenler</h2>
+      <ul>
+        <li>Node.js 20 veya ustu: <a href="https://nodejs.org/en/download" target="_blank" rel="noreferrer">Node.js indir</a></li>
+        <li>Git: <a href="https://git-scm.com/downloads" target="_blank" rel="noreferrer">Git indir</a></li>
+        <li>Windows PowerShell 5.1+ veya PowerShell 7+: <a href="https://learn.microsoft.com/powershell/scripting/install/installing-powershell-on-windows" target="_blank" rel="noreferrer">PowerShell kurulum rehberi</a></li>
+        <li>macOS icin Xcode Command Line Tools: <a href="https://developer.apple.com/xcode/resources/" target="_blank" rel="noreferrer">Apple developer tools</a></li>
+      </ul>
+    </section>
+
+    <section class="steps">
+      <h2>Hizli Kullanim</h2>
+      <ol>
+        <li>Node.js ve Git'i kur.</li>
+        <li>Isletim sistemine uygun installer scriptini indir.</li>
+        <li>Scripti lokal bilgisayarda calistir.</li>
+        <li>Kurulum bitince `start-densha.ps1` veya `start-densha.sh` ile projeleri ac.</li>
+        <li>Calisma akisi: `densha-ui` icin `npm run start`, `densha-oto` icin `npm run server`.</li>
+      </ol>
+    </section>
+
+    <div class="footer">
+      Scriptler eksik bagimliliklari kontrol eder ve hata verirse once yukaridaki resmi kurulum baglantilarini kullanin.
+    </div>
+  </main>
+</body>
+</html>
