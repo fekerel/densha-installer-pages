@@ -1,5 +1,5 @@
 param(
-  [string]$InstallRoot = "$PWD\densha-santiye"
+  [string]$InstallRoot = "$PWD\densha"
 )
 
 $ErrorActionPreference = 'Stop'

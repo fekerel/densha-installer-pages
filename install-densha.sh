@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-INSTALL_ROOT="${1:-$PWD/densha-santiye}"
+INSTALL_ROOT="${1:-$PWD/densha}"
 
 step() {
   printf '\n==> %s\n' "$1"
