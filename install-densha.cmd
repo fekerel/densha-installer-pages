@@ -9,8 +9,8 @@ set "UI_PATH=%INSTALL_ROOT%\densha-ui"
 
 echo.
 echo ==^> Gereksinimler kontrol ediliyor
-where git >nul 2>nul || (echo HATA: git bulunamadi. https://git-scm.com/downloads & goto :fail)
-where node >nul 2>nul || (echo HATA: node bulunamadi. https://nodejs.org & goto :fail)
+where git >nul 2>nul || (echo HATA: Git bulunamadi. indir: https://github.com/git-for-windows/git/releases/latest/download/Git-64-bit.exe & goto :fail)
+where node >nul 2>nul || (echo HATA: Node.js bulunamadi. indir: https://nodejs.org/dist/v20.19.5/node-v20.19.5-x64.msi & goto :fail)
 where npm >nul 2>nul || (echo HATA: npm bulunamadi. Node.js kurulumunu kontrol edin. & goto :fail)
 
 mkdir "%INSTALL_ROOT%" >nul 2>nul

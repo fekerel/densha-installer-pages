@@ -136,6 +136,13 @@
       gap: 10px;
     }
 
+    .prereq {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+    }
+
     .dl {
       display: block;
       text-decoration: none;
@@ -153,6 +160,11 @@
       color: var(--muted);
       font-weight: 500;
       line-height: 1.4;
+    }
+
+    .dl.prereq-btn {
+      background: #f3f8ff;
+      border-color: #c9ddff;
     }
 
     .steps {
@@ -208,8 +220,19 @@
       </div>
 
       <ul class="need">
-        <li>Gerekenler: <a href="https://nodejs.org/en/download" target="_blank" rel="noreferrer">Node.js</a> ve <a href="https://git-scm.com/downloads" target="_blank" rel="noreferrer">Git</a></li>
+        <li>Node.js ve Git yoksa asagidaki iki dosyayi indirip normal sekilde kur (Next, Next, Finish).</li>
       </ul>
+
+      <div class="prereq">
+        <a class="dl prereq-btn" href="https://nodejs.org/dist/v20.19.5/node-v20.19.5-x64.msi" target="_blank" rel="noreferrer">
+          Node.js indir (Windows .msi)
+          <small>Kurup pencereyi kapat, bu sayfaya geri don.</small>
+        </a>
+        <a class="dl prereq-btn" href="https://github.com/git-for-windows/git/releases/download/v2.53.0.windows.2/Git-2.53.0.2-64-bit.exe" target="_blank" rel="noreferrer">
+          Git indir (Windows .exe)
+          <small>Kurup pencereyi kapat, bu sayfaya geri don.</small>
+        </a>
+      </div>
 
       <div class="downloads">
         <a class="dl" href="./install-densha.cmd" download>
