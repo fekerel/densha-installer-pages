@@ -143,6 +143,32 @@
       gap: 10px;
     }
 
+    .group {
+      margin-top: 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .group-title {
+      margin: 0 0 8px;
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #2c4263;
+      font-weight: 800;
+    }
+
+    .group-prereq {
+      background: #f2f7ff;
+      border-color: #cfe0fb;
+    }
+
+    .group-files {
+      background: #f4fbf6;
+      border-color: #cce6d2;
+    }
+
     .dl {
       display: block;
       text-decoration: none;
@@ -223,26 +249,32 @@
         <li>Node.js ve Git yoksa asagidaki iki dosyayi indirip normal sekilde kur (Next, Next, Finish).</li>
       </ul>
 
-      <div class="prereq">
-        <a class="dl prereq-btn" href="https://nodejs.org/dist/v20.19.5/node-v20.19.5-x64.msi" target="_blank" rel="noreferrer">
-          Node.js indir (Windows .msi)
-          <small>Kurup pencereyi kapat, bu sayfaya geri don.</small>
-        </a>
-        <a class="dl prereq-btn" href="https://github.com/git-for-windows/git/releases/download/v2.53.0.windows.2/Git-2.53.0.2-64-bit.exe" target="_blank" rel="noreferrer">
-          Git indir (Windows .exe)
-          <small>Kurup pencereyi kapat, bu sayfaya geri don.</small>
-        </a>
+      <div class="group group-prereq">
+        <p class="group-title">1) Gerekli Programlar</p>
+        <div class="prereq">
+          <a class="dl prereq-btn" href="https://nodejs.org/dist/v20.19.5/node-v20.19.5-x64.msi" target="_blank" rel="noreferrer">
+            Node.js indir (Windows .msi)
+            <small>Kurup pencereyi kapat, bu sayfaya geri don.</small>
+          </a>
+          <a class="dl prereq-btn" href="https://github.com/git-for-windows/git/releases/download/v2.53.0.windows.2/Git-2.53.0.2-64-bit.exe" target="_blank" rel="noreferrer">
+            Git indir (Windows .exe)
+            <small>Kurup pencereyi kapat, bu sayfaya geri don.</small>
+          </a>
+        </div>
       </div>
 
-      <div class="downloads">
-        <a class="dl" href="./install-densha.cmd" download>
-          install-densha.cmd
-          <small>Kurulumu yapar</small>
-        </a>
-        <a class="dl" href="./start-densha.cmd" download>
-          start-densha.cmd
-          <small>Sonraki acilislarda kullan</small>
-        </a>
+      <div class="group group-files">
+        <p class="group-title">2) Densha Dosyalari</p>
+        <div class="downloads">
+          <a class="dl" href="./install-densha.cmd" download>
+            install-densha.cmd
+            <small>Kurulumu yapar</small>
+          </a>
+          <a class="dl" href="./start-densha.cmd" download>
+            start-densha.cmd
+            <small>Sonraki acilislarda kullan</small>
+          </a>
+        </div>
       </div>
 
       <ol class="steps">
@@ -261,18 +293,39 @@
       </div>
 
       <ul class="need">
-        <li>Gerekenler: <a href="https://nodejs.org/en/download" target="_blank" rel="noreferrer">Node.js</a>, <a href="https://git-scm.com/downloads" target="_blank" rel="noreferrer">Git</a>, <a href="https://developer.apple.com/xcode/resources/" target="_blank" rel="noreferrer">Xcode Command Line Tools</a></li>
+        <li>Node.js, Git veya Xcode Command Line Tools yoksa once asagidaki butonlardan kur.</li>
       </ul>
 
-      <div class="downloads">
-        <a class="dl" href="./install-densha.sh" download>
-          install-densha.sh
-          <small>Kurulumu yapar</small>
-        </a>
-        <a class="dl" href="./start-densha.sh" download>
-          start-densha.sh
-          <small>Sonraki acilislarda kullan</small>
-        </a>
+      <div class="group group-prereq">
+        <p class="group-title">1) Gerekli Programlar</p>
+        <div class="prereq">
+          <a class="dl prereq-btn" href="https://nodejs.org/dist/v20.19.5/node-v20.19.5.pkg" target="_blank" rel="noreferrer">
+            Node.js indir (macOS .pkg)
+            <small>Kurup pencereyi kapat, bu sayfaya geri don.</small>
+          </a>
+          <a class="dl prereq-btn" href="https://sourceforge.net/projects/git-osx-installer/files/latest/download" target="_blank" rel="noreferrer">
+            Git indir (macOS installer)
+            <small>Kurup pencereyi kapat, bu sayfaya geri don.</small>
+          </a>
+          <a class="dl prereq-btn" href="https://developer.apple.com/xcode/resources/" target="_blank" rel="noreferrer">
+            Xcode Command Line Tools
+            <small>Apple sayfasindan kur.</small>
+          </a>
+        </div>
+      </div>
+
+      <div class="group group-files">
+        <p class="group-title">2) Densha Dosyalari</p>
+        <div class="downloads">
+          <a class="dl" href="./install-densha.sh" download>
+            install-densha.sh
+            <small>Kurulumu yapar</small>
+          </a>
+          <a class="dl" href="./start-densha.sh" download>
+            start-densha.sh
+            <small>Sonraki acilislarda kullan</small>
+          </a>
+        </div>
       </div>
 
       <ol class="steps">

@@ -19,6 +19,14 @@ if not exist "%UI_PATH%" (
   exit /b 1
 )
 
+where npm >nul 2>&1
+if errorlevel 1 (
+  echo HATA: npm bulunamadi. Node.js kurulu olmayabilir.
+  echo Cozum: Node.js kurup tekrar deneyin.
+  pause
+  exit /b 1
+)
+
 start "densha-oto" cmd /k "cd /d "%OTO_PATH%" && npm run server"
 start "densha-ui" cmd /k "cd /d "%UI_PATH%" && npm run start"
 
