@@ -3,219 +3,303 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Densha Installer</title>
+  <title>Densha Kurulum</title>
   <style>
     :root {
-      --bg: #f4efe6;
-      --card: #fffaf3;
-      --text: #1e2430;
-      --muted: #5e6573;
-      --accent: #0d6b5f;
-      --accent-dark: #084c44;
-      --border: #d8cfbf;
+      --bg-1: #f6f2e8;
+      --bg-2: #e8eef6;
+      --card: #ffffff;
+      --text: #1e2330;
+      --muted: #5f6675;
+      --line: #d4dbe6;
+      --primary: #185b9d;
+      --primary-2: #0f3f70;
+      --pill: #eef5ff;
     }
 
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      background: radial-gradient(circle at top, #fff7ea 0%, var(--bg) 55%, #e9e0d2 100%);
-      color: var(--text);
       min-height: 100vh;
       display: grid;
       place-items: center;
-      padding: 24px;
+      padding: 20px;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      color: var(--text);
+      background: radial-gradient(1200px 500px at 20% 0%, var(--bg-1), transparent),
+                  radial-gradient(1000px 500px at 90% 100%, var(--bg-2), transparent),
+                  #f8fafc;
     }
 
     main {
       width: min(760px, 100%);
-      background: color-mix(in srgb, var(--card) 92%, white 8%);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 32px;
-      box-shadow: 0 20px 60px rgba(61, 48, 28, 0.12);
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 26px;
+      box-shadow: 0 16px 44px rgba(30, 35, 48, 0.08);
     }
 
     h1 {
-      margin-top: 0;
-      font-size: clamp(2rem, 4vw, 3rem);
-      line-height: 1.05;
+      margin: 0;
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
+      letter-spacing: 0.01em;
     }
 
-    p {
+    .lead {
+      margin: 10px 0 0;
       color: var(--muted);
       font-size: 1.05rem;
-      line-height: 1.6;
     }
 
-    .actions {
+    .os-grid {
+      margin-top: 22px;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-      margin: 28px 0;
+      gap: 12px;
     }
 
-    a.card {
+    button.os-btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      border-radius: 14px;
+      padding: 18px 14px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: 0.16s ease;
+    }
+
+    button.os-btn:hover {
+      border-color: var(--primary);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 22px rgba(24, 91, 157, 0.12);
+    }
+
+    .os-title {
+      display: block;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .panel {
+      display: none;
+      margin-top: 22px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+      animation: fadeIn 0.2s ease;
+    }
+
+    .panel.active { display: block; }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      background: var(--pill);
+      border: 1px solid #d7e7ff;
+      color: var(--primary-2);
+      border-radius: 999px;
+      padding: 5px 11px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.4rem;
+    }
+
+    .need {
+      margin: 14px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .need a { color: var(--primary-2); font-weight: 700; }
+
+    .downloads {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+    }
+
+    .dl {
       display: block;
       text-decoration: none;
       color: inherit;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 20px;
-      background: white;
-      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
-    }
-
-    a.card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(13, 107, 95, 0.12);
-      border-color: var(--accent);
-    }
-
-    .label {
-      display: inline-block;
-      margin-bottom: 10px;
-      color: var(--accent);
-      font-size: 0.85rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
       font-weight: 700;
     }
 
-    .title {
-      font-size: 1.3rem;
-      margin-bottom: 8px;
-      font-weight: 700;
-    }
-
-    code {
-      background: #f3ecdf;
-      padding: 2px 6px;
-      border-radius: 6px;
-    }
-
-    .footer {
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 1px solid var(--border);
-      font-size: 0.95rem;
-    }
-
-    .footer a {
-      color: var(--accent-dark);
-    }
-
-    .requirements {
-      margin-top: 28px;
-      padding: 22px;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.7);
-    }
-
-    .requirements h2 {
-      margin: 0 0 12px;
-      font-size: 1.35rem;
-    }
-
-    .requirements ul {
-      margin: 0;
-      padding-left: 20px;
+    .dl small {
+      display: block;
+      margin-top: 5px;
       color: var(--muted);
-      line-height: 1.8;
-    }
-
-    .requirements a,
-    .footer a {
-      color: var(--accent-dark);
-      font-weight: 700;
+      font-weight: 500;
+      line-height: 1.4;
     }
 
     .steps {
-      margin-top: 24px;
-      padding: 22px;
-      border: 1px dashed var(--border);
-      border-radius: 18px;
-      background: rgba(243, 236, 223, 0.6);
+      margin-top: 14px;
+      padding-left: 18px;
+      line-height: 1.7;
     }
 
-    .steps h2 {
-      margin: 0 0 12px;
-      font-size: 1.35rem;
+    code {
+      background: #eef3f9;
+      border: 1px solid #d6e3f2;
+      border-radius: 6px;
+      padding: 1px 6px;
+      font-size: 0.94rem;
     }
 
-    .steps ol {
-      margin: 0;
-      padding-left: 22px;
-      line-height: 1.8;
+    .switch {
+      margin-top: 14px;
+      color: var(--primary-2);
+      text-decoration: underline;
+      cursor: pointer;
+      display: inline-block;
+      font-size: 0.94rem;
+      font-weight: 700;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
   <main>
-    <h1>Densha Installer</h1>
-    <p>
-      Windows ve macOS kullanicilari icin hazir kurulum scriptleri. Scripti indirip calistirdiginizda
-      <code>densha-oto</code> ve <code>densha-ui</code> repolari clone edilir, bagimliliklar kurulur ve
-      Playwright Chromium yuklenir. Kurulum sonrasinda ayri launcher scriptleri ile iki proje birlikte acilabilir.
-    </p>
+    <h1>Densha Kurulum</h1>
+    <p class="lead">Ilk adim: isletim sistemini sec.</p>
 
-    <div class="actions">
-      <a class="card" href="./install-densha.cmd" download>
-        <div class="label">Windows</div>
-        <div class="title">install-densha.cmd</div>
-        <div>Cift tiklayarak calistirin. Chromium dahil tum bagimliliklari kurar.</div>
-      </a>
-
-      <a class="card" href="./install-densha.sh" download>
-        <div class="label">macOS</div>
-        <div class="title">install-densha.sh</div>
-        <div>Bash veya zsh ile tek komutluk kurulum.</div>
-      </a>
-
-      <a class="card" href="./start-densha.cmd" download>
-        <div class="label">Windows</div>
-        <div class="title">start-densha.cmd</div>
-        <div>Cift tiklayarak calistirin. Iki projeyi ayri PowerShell pencerelerinde baslatir.</div>
-      </a>
-
-      <a class="card" href="./start-densha.sh" download>
-        <div class="label">macOS</div>
-        <div class="title">start-densha.sh</div>
-        <div>Iki projeyi ayri Terminal pencerelerinde baslatir.</div>
-      </a>
-
-      <a class="card" href="./README.md">
-        <div class="label">Dokumantasyon</div>
-        <div class="title">README.md</div>
-        <div>Kullanim ve dagitim notlari.</div>
-      </a>
+    <div id="os-select" class="os-grid">
+      <button class="os-btn" data-os="windows" type="button">
+        <span class="os-title">Windows</span>
+        CMD dosyalariyla kurulum
+      </button>
+      <button class="os-btn" data-os="mac" type="button">
+        <span class="os-title">macOS</span>
+        SH dosyalariyla kurulum
+      </button>
     </div>
 
-    <section class="requirements">
-      <h2>Gerekenler</h2>
-      <ul>
-        <li>Node.js 20 veya ustu: <a href="https://nodejs.org/en/download" target="_blank" rel="noreferrer">Node.js indir</a></li>
-        <li>Git: <a href="https://git-scm.com/downloads" target="_blank" rel="noreferrer">Git indir</a></li>
-        <li>macOS icin Xcode Command Line Tools: <a href="https://developer.apple.com/xcode/resources/" target="_blank" rel="noreferrer">Apple developer tools</a></li>
+    <section id="panel-windows" class="panel" aria-hidden="true">
+      <div class="top">
+        <h2>Windows Kurulum</h2>
+        <span class="badge">Kolay kurulum</span>
+      </div>
+
+      <ul class="need">
+        <li>Gerekenler: <a href="https://nodejs.org/en/download" target="_blank" rel="noreferrer">Node.js</a> ve <a href="https://git-scm.com/downloads" target="_blank" rel="noreferrer">Git</a></li>
       </ul>
-    </section>
 
-    <section class="steps">
-      <h2>Hizli Kullanim</h2>
-      <ol>
-        <li>Node.js ve Git'i kur.</li>
-        <li>Isletim sistemine uygun installer scriptini indir.</li>
-        <li>Scripti lokal bilgisayarda calistir.</li>
-        <li>Kurulum bitince `start-densha.cmd` (Windows) veya `start-densha.sh` (macOS) ile projeleri ac.</li>
-        <li>Calisma akisi: `densha-ui` icin `npm run start`, `densha-oto` icin `npm run server`.</li>
+      <div class="downloads">
+        <a class="dl" href="./install-densha.cmd" download>
+          install-densha.cmd
+          <small>Kurulumu yapar</small>
+        </a>
+        <a class="dl" href="./start-densha.cmd" download>
+          start-densha.cmd
+          <small>Sonraki acilislarda kullan</small>
+        </a>
+      </div>
+
+      <ol class="steps">
+        <li>Bu iki dosyayi AYNI klasore indir.</li>
+        <li><code>install-densha.cmd</code> dosyasini cift tikla ve kurulumun bitmesini bekle.</li>
+        <li>Kurulum bittikten sonra uygulamayi her acmak istediginde <code>start-densha.cmd</code> dosyasini cift tikla.</li>
       </ol>
+
+      <span class="switch" data-back="true">Farkli isletim sistemi sec</span>
     </section>
 
-    <div class="footer">
-      Scriptler eksik bagimliliklari kontrol eder ve hata verirse once yukaridaki resmi kurulum baglantilarini kullanin.
-    </div>
+    <section id="panel-mac" class="panel" aria-hidden="true">
+      <div class="top">
+        <h2>macOS Kurulum</h2>
+        <span class="badge">Kolay kurulum</span>
+      </div>
+
+      <ul class="need">
+        <li>Gerekenler: <a href="https://nodejs.org/en/download" target="_blank" rel="noreferrer">Node.js</a>, <a href="https://git-scm.com/downloads" target="_blank" rel="noreferrer">Git</a>, <a href="https://developer.apple.com/xcode/resources/" target="_blank" rel="noreferrer">Xcode Command Line Tools</a></li>
+      </ul>
+
+      <div class="downloads">
+        <a class="dl" href="./install-densha.sh" download>
+          install-densha.sh
+          <small>Kurulumu yapar</small>
+        </a>
+        <a class="dl" href="./start-densha.sh" download>
+          start-densha.sh
+          <small>Sonraki acilislarda kullan</small>
+        </a>
+      </div>
+
+      <ol class="steps">
+        <li>Bu iki dosyayi AYNI klasore indir.</li>
+        <li>Terminal acip ayni klasorde <code>chmod +x install-densha.sh start-densha.sh</code> calistir.</li>
+        <li><code>./install-densha.sh</code> ile kurulumu tamamla.</li>
+        <li>Kurulum bittikten sonra uygulamayi her acmak istediginde <code>./start-densha.sh</code> calistir.</li>
+      </ol>
+
+      <span class="switch" data-back="true">Farkli isletim sistemi sec</span>
+    </section>
   </main>
+
+  <script>
+    const osSelect = document.getElementById('os-select');
+    const panelWindows = document.getElementById('panel-windows');
+    const panelMac = document.getElementById('panel-mac');
+    const osButtons = document.querySelectorAll('[data-os]');
+    const backButtons = document.querySelectorAll('[data-back]');
+
+    function showSelect() {
+      osSelect.style.display = 'grid';
+      panelWindows.classList.remove('active');
+      panelMac.classList.remove('active');
+      panelWindows.setAttribute('aria-hidden', 'true');
+      panelMac.setAttribute('aria-hidden', 'true');
+    }
+
+    function showPanel(os) {
+      osSelect.style.display = 'none';
+      if (os === 'windows') {
+        panelWindows.classList.add('active');
+        panelMac.classList.remove('active');
+        panelWindows.setAttribute('aria-hidden', 'false');
+        panelMac.setAttribute('aria-hidden', 'true');
+      } else {
+        panelMac.classList.add('active');
+        panelWindows.classList.remove('active');
+        panelMac.setAttribute('aria-hidden', 'false');
+        panelWindows.setAttribute('aria-hidden', 'true');
+      }
+    }
+
+    osButtons.forEach((btn) => {
+      btn.addEventListener('click', () => showPanel(btn.dataset.os));
+    });
+
+    backButtons.forEach((btn) => {
+      btn.addEventListener('click', showSelect);
+    });
+  </script>
 </body>
 </html>
