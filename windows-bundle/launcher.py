@@ -2,6 +2,7 @@ import ctypes
 import os
 import subprocess
 import sys
+import time
 
 
 def show_error(message: str) -> None:
@@ -37,13 +38,15 @@ def main() -> int:
         env["PLAYWRIGHT_BUNDLED_BROWSER_DIR"] = browsers_dir
 
     try:
-        subprocess.Popen([oto_exe], cwd=root, env=env)
+        subprocess.Popen([oto_exe], cwd=root, env=env, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
     except Exception as exc:
         show_error(f"densha-oto.exe baslatilamadi.\n\n{exc}")
         return 1
 
+    time.sleep(1)
+
     try:
-        subprocess.Popen([ui_exe], cwd=root, env=env)
+        subprocess.Popen([ui_exe], cwd=root, env=env, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
     except Exception as exc:
         show_error(f"densha-ui.exe baslatilamadi.\n\n{exc}")
         return 1
