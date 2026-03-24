@@ -133,7 +133,7 @@ jobs:
             $pwBrowsersPath = "$env:USERPROFILE\AppData\Local\ms-playwright"
           }
           if (Test-Path $pwBrowsersPath) {
-            Copy-Item -Path $pwBrowsersPath -Destination $browsersDir -Recurse -Force
+            Copy-Item -Path "$pwBrowsersPath\*" -Destination $browsersDir -Recurse -Force
             Write-Host "Playwright browsers copied from: $pwBrowsersPath"
           } else {
             Write-Error "Playwright browsers bulunamadi: $pwBrowsersPath"
