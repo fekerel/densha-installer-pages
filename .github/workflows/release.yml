@@ -25,12 +25,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: fekerel/densha-oto
+          ref: release
           path: densha-oto
 
       - name: Checkout densha-ui
         uses: actions/checkout@v4
         with:
           repository: fekerel/densha-ui
+          ref: release
           path: densha-ui
 
       # ── Setup Node.js ─────────────────────────────────────────────────────────
