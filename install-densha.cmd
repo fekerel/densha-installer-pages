@@ -6,12 +6,36 @@ set "SCRIPT_DIR=%~dp0"
 set "INSTALL_ROOT=%SCRIPT_DIR%densha"
 set "OTO_PATH=%INSTALL_ROOT%\densha-oto"
 set "UI_PATH=%INSTALL_ROOT%\densha-ui"
+set "TOOLS_DIR=%SCRIPT_DIR%tools"
+set "PORTABLE_NODE_DIR=%TOOLS_DIR%\node"
+set "PORTABLE_GIT_DIR=%TOOLS_DIR%\git"
+
+set "GIT_CMD="
+set "NPM_CMD="
+set "NPX_CMD="
 
 echo.
 echo ==^> Gereksinimler kontrol ediliyor
-where git >nul 2>nul || (echo HATA: Git bulunamadi. indir: https://github.com/git-for-windows/git/releases/latest/download/Git-64-bit.exe & goto :fail)
-where node >nul 2>nul || (echo HATA: Node.js bulunamadi. indir: https://nodejs.org/dist/v20.19.5/node-v20.19.5-x64.msi & goto :fail)
-where npm >nul 2>nul || (echo HATA: npm bulunamadi. Node.js kurulumunu kontrol edin. & goto :fail)
+if exist "%PORTABLE_GIT_DIR%\cmd\git.exe" (
+  set "GIT_CMD=%PORTABLE_GIT_DIR%\cmd\git.exe"
+  echo Git: portable paket kullaniliyor.
+) else (
+  where git >nul 2>nul || (echo HATA: Git bulunamadi. Cozum 1: tools\git altina portable Git koy. Cozum 2: Git kur. & goto :fail)
+  set "GIT_CMD=git"
+  echo Git: sistem PATH kullaniliyor.
+)
+
+if exist "%PORTABLE_NODE_DIR%\npm.cmd" (
+  set "NPM_CMD=%PORTABLE_NODE_DIR%\npm.cmd"
+  set "NPX_CMD=%PORTABLE_NODE_DIR%\npx.cmd"
+  set "PATH=%PORTABLE_NODE_DIR%;%PATH%"
+  echo Node/npm: portable paket kullaniliyor.
+) else (
+  where npm >nul 2>nul || (echo HATA: npm bulunamadi. Cozum 1: tools\node altina portable Node koy. Cozum 2: Node.js kur. & goto :fail)
+  set "NPM_CMD=npm"
+  set "NPX_CMD=npx"
+  echo Node/npm: sistem PATH kullaniliyor.
+)
 
 mkdir "%INSTALL_ROOT%" >nul 2>nul
 
@@ -20,26 +44,26 @@ echo ==^> Repolar clone ediliyor
 if exist "%OTO_PATH%" (
   echo Mevcut klasor bulundu, clone atlaniyor: "%OTO_PATH%"
 ) else (
-  git clone --branch master https://github.com/fekerel/densha-oto.git "%OTO_PATH%" || goto :fail
+  "%GIT_CMD%" clone --branch master https://github.com/fekerel/densha-oto.git "%OTO_PATH%" || goto :fail
 )
 
 if exist "%UI_PATH%" (
   echo Mevcut klasor bulundu, clone atlaniyor: "%UI_PATH%"
 ) else (
-  git clone --branch main https://github.com/fekerel/densha-ui.git "%UI_PATH%" || goto :fail
+  "%GIT_CMD%" clone --branch main https://github.com/fekerel/densha-ui.git "%UI_PATH%" || goto :fail
 )
 
 echo.
 echo ==^> densha-oto bagimliliklari kuruluyor
 pushd "%OTO_PATH%" || goto :fail
-call npm install || (popd & goto :fail)
-call npx playwright install chromium || (popd & goto :fail)
+call "%NPM_CMD%" install || (popd & goto :fail)
+call "%NPX_CMD%" playwright install chromium || (popd & goto :fail)
 popd
 
 echo.
 echo ==^> densha-ui bagimliliklari kuruluyor
 pushd "%UI_PATH%" || goto :fail
-call npm install || (popd & goto :fail)
+call "%NPM_CMD%" install || (popd & goto :fail)
 popd
 
 echo.

@@ -1,0 +1,4 @@
+bundle-root/
+dist/
+windows-bundle/.build/
+windows-exe/.build/

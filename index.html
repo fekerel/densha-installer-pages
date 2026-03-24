@@ -193,6 +193,16 @@
       border-color: #c9ddff;
     }
 
+    .dl.binary-btn {
+      background: #fff6eb;
+      border-color: #ffd7a8;
+    }
+
+    .dl.disabled {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
     .steps {
       margin-top: 14px;
       padding-left: 18px;
@@ -231,26 +241,40 @@
     <div id="os-select" class="os-grid">
       <button class="os-btn" data-os="windows" type="button">
         <span class="os-title">Windows</span>
-        CMD dosyalariyla kurulum
+        EXE wrapper + CMD akisi
       </button>
       <button class="os-btn" data-os="mac" type="button">
         <span class="os-title">macOS</span>
-        SH dosyalariyla kurulum
+        SH script akisi
       </button>
     </div>
 
     <section id="panel-windows" class="panel" aria-hidden="true">
       <div class="top">
         <h2>Windows Kurulum</h2>
-        <span class="badge">Kolay kurulum</span>
+        <span class="badge">EXE wrapper</span>
       </div>
 
       <ul class="need">
-        <li>Node.js ve Git yoksa asagidaki iki dosyayi indirip normal sekilde kur (Next, Next, Finish).</li>
+        <li>EXE, alttan yine mevcut install scriptini calistirir (git clone + npm install akisi ayni kalir).</li>
+        <li>Node ve Git, ZIP icindeki <code>tools/</code> klasoruyle portable verildiyse ayrica kurulum gerekmez.</li>
       </ul>
 
+      <div class="group" style="background:#fff8ef;border-color:#ffd9ab;">
+        <p class="group-title">0) EXE Kanal (Ayni akis, farkli giris)</p>
+        <div class="downloads">
+          <a class="dl binary-btn" href="https://github.com/fekerel/densha-installer-pages/releases/latest/download/Densha-Windows-Bundle.zip">
+            Densha-Windows-Bundle.zip
+            <small>Tek zip: root launcher + apps + portable Chromium.</small>
+          </a>
+        </div>
+      </div>
+
       <div class="group group-prereq">
-        <p class="group-title">1) Gerekli Programlar</p>
+        <p class="group-title">1) Gereken Programlar</p>
+        <ul class="need" style="margin-top:0;">
+          <li>Bu adim sadece ZIP icinde <code>tools/node</code> ve <code>tools/git</code> yoksa gerekir.</li>
+        </ul>
         <div class="prereq">
           <a class="dl prereq-btn" href="https://nodejs.org/dist/v20.19.5/node-v20.19.5-x64.msi" target="_blank" rel="noreferrer">
             Node.js indir (Windows .msi)
@@ -264,7 +288,7 @@
       </div>
 
       <div class="group group-files">
-        <p class="group-title">2) Densha Dosyalari</p>
+        <p class="group-title">2) Script Kanal (Alternatif)</p>
         <div class="downloads">
           <a class="dl" href="./install-densha.cmd" download>
             install-densha.cmd
@@ -289,15 +313,25 @@
     <section id="panel-mac" class="panel" aria-hidden="true">
       <div class="top">
         <h2>macOS Kurulum</h2>
-        <span class="badge">Kolay kurulum</span>
+        <span class="badge">Script kanali</span>
       </div>
 
       <ul class="need">
-        <li>Node.js, Git veya Xcode Command Line Tools yoksa once asagidaki butonlardan kur.</li>
+        <li>macOS icin bu repoda script kanali vardir. `.exe` yerine `.sh` ile kurulum yapilir.</li>
       </ul>
 
+      <div class="group" style="background:#fff8ef;border-color:#ffd9ab;">
+        <p class="group-title">0) Not</p>
+        <div class="downloads">
+          <a class="dl binary-btn disabled" href="#" aria-disabled="true">
+            .dmg/.app kanalina gecis ayrica planlanacak
+            <small>Bu branchte aktif olan kanal .sh script kanalidir.</small>
+          </a>
+        </div>
+      </div>
+
       <div class="group group-prereq">
-        <p class="group-title">1) Gerekli Programlar</p>
+        <p class="group-title">1) Gereken Programlar</p>
         <div class="prereq">
           <a class="dl prereq-btn" href="https://nodejs.org/dist/v20.19.5/node-v20.19.5.pkg" target="_blank" rel="noreferrer">
             Node.js indir (macOS .pkg)

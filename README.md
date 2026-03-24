@@ -1,88 +1,97 @@
-# Densha Kurulum Scriptleri
+# Densha Installer Pages
 
-Bu klasor iki repo icin tek komutluk kurulum scriptleri icerir:
+Bu repo Densha dagitim sayfasini ve installer scriptlerini tutar.
 
-- `install-densha.ps1`: Windows PowerShell
-- `install-densha.sh`: macOS / Linux shell
-- `start-densha.ps1`: Windows icin iki projeyi birlikte baslatir
-- `start-densha.sh`: macOS icin iki projeyi birlikte baslatir
+Bu branch: `feat/exe-no-prereq-distribution`
 
-## Gereksinimler
+## Senin istedigin model
 
-- Node.js 20+: https://nodejs.org/en/download
-- Git: https://git-scm.com/downloads
-- Windows icin PowerShell: https://learn.microsoft.com/powershell/scripting/install/installing-powershell-on-windows
-- macOS icin Xcode Command Line Tools: https://developer.apple.com/xcode/resources/
+Amaç: `.cmd` ile yapilan isi `exe` ile baslatmak.
 
-Scriptler `git`, `node`, `npm` eksikse erken durur.
+Davranis ayni kalir:
 
-Scriptler su adimlari yapar:
+- `git clone`
+- `npm install`
+- `npx playwright install chromium`
+- `.env` olusturma
 
-1. `densha-oto` reposunu clone eder
-2. `densha-ui` reposunu clone eder
-3. Her iki proje icin `npm install` calistirir
-4. `densha-oto` icin `npx playwright install chromium` calistirir
-5. Eksikse `densha-oto/.env` ve `densha-ui/.env` sablonlarini olusturur
+Yani EXE burada bir wrapper giristir; kurulum adimlari yine `install-densha.cmd` tarafinda calisir.
 
-## Windows
+## Windows EXE wrapper uretimi
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\install-densha.ps1
-```
+Bu repoda hazir script var:
 
-Farkli kurulum klasoru icin:
+- `windows-exe/build-exes.cmd`
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\install-densha.ps1 -InstallRoot C:\Users\<kullanici>\Desktop\densha
-```
+Urettigi dosyalar:
+
+- `dist/Densha-Install.exe` -> `install-densha.cmd` cagirir
+- `dist/Densha-Start.exe` -> `start-densha.cmd` cagirir
+
+### Kullanim
+
+1. `windows-exe/build-exes.cmd` calistir.
+2. `dist/` altindaki EXE dosyalarini al.
+3. EXE'leri ZIPleyip sayfadan dagit.
+
+## Tek root launcher modeli (hedeflenen dagitim)
+
+Bu modelde zip root'ta tek calistirilabilir dosya olur:
+
+- `Densha-Launcher.exe`
+
+Asagidaki yapi kullanilir:
+
+- `Densha-Launcher.exe`
+- `apps/densha-ui.exe`
+- `apps/densha-oto.exe`
+- `apps/densha-oto-worker.exe`
+- `browsers/chromium/chrome-win/chrome.exe`
+
+`Densha-Launcher.exe` hem UI hem OTO exe'lerini birlikte baslatir ve her ikisine de `PLAYWRIGHT_BUNDLED_BROWSER_DIR` ortam degiskenini verir.
+
+Hazirlama scriptleri:
+
+- `windows-bundle/build-all.cmd`
+- `windows-bundle/build-launcher.cmd`
+- `windows-bundle/prepare-bundle-layout.cmd`
+
+### Zip linkini web sayfasina verme
+
+Buyuk zip dosyasini repoya commit etme. GitHub Release asset olarak yukle:
+
+1. `Densha-Windows-Bundle.zip` dosyasini release'e ekle.
+2. Dosya adini sabit tut: `Densha-Windows-Bundle.zip`
+3. Sayfada su link kullanilir:
+
+- `https://github.com/fekerel/densha-installer-pages/releases/latest/download/Densha-Windows-Bundle.zip`
+
+## Portable araclar notu
+
+Script kanalinda kullaniciya global kurulum yaptirmadan da calistirabilirsin:
+
+- `tools/node/` altina portable Node koy (icinde `node.exe`, `npm.cmd`, `npx.cmd` olmali)
+- `tools/git/` altina portable Git koy (icinde `cmd/git.exe` olmali)
+
+Scriptler once bu portable klasorleri dener, bulamazsa sistemdeki kurulu `git/node/npm`e duser.
+
+Ornek zip duzeni:
+
+- `Densha-Install.exe`
+- `Densha-Start.exe`
+- `tools/node/...`
+- `tools/git/...`
+
+Eger bunlari da kurdurmadan dagitmak istersen, bu artik farkli bir model olur:
+
+- Electron tarafini paketli app/installer yapma
+- Oto tarafini binary paketleme
+- Runtime'lari paketin icine gommme
+
+Bu adimlar `densha-ui` ve `densha-oto` repolarinda ayrica yapilmali.
 
 ## macOS
 
-```bash
-chmod +x ./install-densha.sh
-./install-densha.sh
-```
-
-Farkli kurulum klasoru icin:
-
-```bash
-./install-densha.sh "$HOME/Desktop/densha"
-```
-
-## Baslatma
-
-Kurulumdan sonra iki projeyi birlikte acmak icin:
-
-### Windows
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\start-densha.ps1
-```
-
-### macOS
-
-```bash
-chmod +x ./start-densha.sh
-./start-densha.sh
-```
-
-Launcher scriptleri su komutlari calistirir:
-
-- `densha-ui`: `npm run start`
-- `densha-oto`: `npm run server`
-
-## GitHub Pages Icin Dagitim
-
-`pages/` klasoru publish-ready yapidadir. Bu klasoru ayri bir repo olarak koyup GitHub Pages ile yayinlayabilirsin.
-
-Oneri:
-
-1. `pages/` klasorunu ayri bir repoya koy
-2. Repo ayarlarindan GitHub Pages kaynagini `Deploy from a branch` olarak sec
-3. Branch olarak `main`, klasor olarak `/root` sec
-
-Notlar:
-
-- Scriptlerin calismasi icin kullanicida `git`, `node`, `npm` kurulu olmali.
-- macOS tarafinda ilk calistirmada `xcode-select --install` gerekebilir.
-- GitHub Pages scripti direkt calistirmaz; sadece indirilebilir hale getirir.
+macOS'ta `.exe` yoktur.
+Benzer wrapper mantigi icin `.app`/`.pkg`/`.dmg` gerekir.
+Ama mevcut istegin (cmd benzeri akisin wrapper ile acilmasi) Windows odakli EXE ile su an karsilandi.
