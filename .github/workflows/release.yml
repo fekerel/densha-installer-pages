@@ -27,6 +27,7 @@ jobs:
           repository: fekerel/densha-oto
           ref: release
           path: densha-oto
+          token: ${{ secrets.GH_PAT }}
 
       - name: Checkout densha-ui
         uses: actions/checkout@v4
@@ -34,6 +35,7 @@ jobs:
           repository: fekerel/densha-ui
           ref: release
           path: densha-ui
+          token: ${{ secrets.GH_PAT }}
 
       # ── Setup Node.js ─────────────────────────────────────────────────────────
       - name: Setup Node.js
