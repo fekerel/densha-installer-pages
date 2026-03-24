@@ -19,14 +19,17 @@ def main() -> int:
     root = root_dir()
     apps_dir = os.path.join(root, "apps")
     browsers_dir = os.path.join(root, "browsers")
-
-    oto_exe = os.path.join(apps_dir, "densha-oto.exe")
+    oto_dir = os.path.join(apps_dir, "densha-oto")
     ui_exe = os.path.join(apps_dir, "densha-ui.exe")
+    node_exe = os.path.join(oto_dir, "node.exe")
+    server_js = os.path.join(oto_dir, "server", "automationServer.js")
 
     missing = []
-    if not os.path.exists(oto_exe):
-        missing.append(oto_exe)
-    if not os.path.exists(ui_exe):
+    if not os.path.isfile(node_exe):
+        missing.append(node_exe)
+    if not os.path.isfile(server_js):
+        missing.append(server_js)
+    if not os.path.isfile(ui_exe):
         missing.append(ui_exe)
 
     if missing:
@@ -34,21 +37,35 @@ def main() -> int:
         return 1
 
     env = os.environ.copy()
+    # Point both Playwright instances to the bundled browser directory
     if os.path.isdir(browsers_dir):
-        env["PLAYWRIGHT_BUNDLED_BROWSER_DIR"] = browsers_dir
+        env["PLAYWRIGHT_BROWSERS_PATH"] = browsers_dir
 
+    # Start densha-oto automation server (node.exe server/automationServer.js)
     try:
-        subprocess.Popen([oto_exe], cwd=root, env=env, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
+        subprocess.Popen(
+            [node_exe, server_js],
+            cwd=oto_dir,
+            env=env,
+            creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,
+        )
     except Exception as exc:
-        show_error(f"densha-oto.exe baslatilamadi.\n\n{exc}")
+        show_error(f"densha-oto sunucusu baslatılamadı.\n\n{exc}")
         return 1
 
-    time.sleep(1)
+    # Give the server a moment to bind its port before the UI opens
+    time.sleep(1.5)
 
+    # Start densha-ui Electron app
     try:
-        subprocess.Popen([ui_exe], cwd=root, env=env, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
+        subprocess.Popen(
+            [ui_exe],
+            cwd=root,
+            env=env,
+            creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,
+        )
     except Exception as exc:
-        show_error(f"densha-ui.exe baslatilamadi.\n\n{exc}")
+        show_error(f"densha-ui baslatilamadı.\n\n{exc}")
         return 1
 
     return 0

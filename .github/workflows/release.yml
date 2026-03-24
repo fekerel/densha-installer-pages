@@ -1,0 +1,168 @@
+name: Build & Release Windows Bundle
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g. v1.0.0)'
+        required: true
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      # ── Checkout all repos ────────────────────────────────────────────────────
+      - name: Checkout densha-installer-pages
+        uses: actions/checkout@v4
+        with:
+          path: densha-installer-pages
+
+      - name: Checkout densha-oto
+        uses: actions/checkout@v4
+        with:
+          repository: fekerel/densha-oto
+          path: densha-oto
+
+      - name: Checkout densha-ui
+        uses: actions/checkout@v4
+        with:
+          repository: fekerel/densha-ui
+          path: densha-ui
+
+      # ── Setup Node.js ─────────────────────────────────────────────────────────
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # ── Setup Python for PyInstaller ──────────────────────────────────────────
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install PyInstaller
+        run: pip install pyinstaller
+
+      # ── Install densha-oto dependencies ───────────────────────────────────────
+      - name: Install densha-oto dependencies
+        working-directory: densha-oto
+        run: npm ci
+
+      # ── Build densha-ui portable exe ──────────────────────────────────────────
+      - name: Install densha-ui dependencies
+        working-directory: densha-ui
+        run: npm ci
+
+      - name: Build densha-ui portable
+        working-directory: densha-ui
+        run: npm run build:portable-win
+
+      # ── Build Densha.exe launcher via PyInstaller ─────────────────────────────
+      - name: Build Densha.exe launcher
+        working-directory: densha-installer-pages/windows-bundle
+        run: |
+          pyinstaller --onefile --noconsole --name Densha launcher.py
+
+      # ── Download portable Node.js ──────────────────────────────────────────────
+      - name: Download portable Node.js
+        run: |
+          $nodeVersion = "20.19.0"
+          $url = "https://nodejs.org/dist/v$nodeVersion/node-v$nodeVersion-win-x64.zip"
+          Invoke-WebRequest -Uri $url -OutFile "$env:RUNNER_TEMP\node-portable.zip"
+          Expand-Archive -Path "$env:RUNNER_TEMP\node-portable.zip" -DestinationPath "$env:RUNNER_TEMP\node-portable"
+          $nodeExe = Get-ChildItem -Path "$env:RUNNER_TEMP\node-portable" -Filter "node.exe" -Recurse | Select-Object -First 1
+          Copy-Item -Path $nodeExe.FullName -Destination "$env:RUNNER_TEMP\node.exe"
+          Write-Host "Node.exe: $($nodeExe.FullName)"
+        shell: pwsh
+
+      # ── Install Playwright Chromium ────────────────────────────────────────────
+      - name: Install Playwright Chromium
+        working-directory: densha-oto
+        run: npx playwright install chromium --with-deps
+
+      # ── Assemble bundle layout ─────────────────────────────────────────────────
+      - name: Assemble bundle layout
+        shell: pwsh
+        run: |
+          $bundleRoot = ".\bundle-root"
+          $appsDir    = "$bundleRoot\apps"
+          $otoDir     = "$appsDir\densha-oto"
+          $browsersDir= "$bundleRoot\browsers"
+
+          New-Item -ItemType Directory -Force -Path $otoDir     | Out-Null
+          New-Item -ItemType Directory -Force -Path $browsersDir | Out-Null
+
+          # --- Densha.exe launcher ---
+          Copy-Item -Path "densha-installer-pages\windows-bundle\dist\Densha.exe" `
+                    -Destination "$bundleRoot\Densha.exe"
+
+          # --- densha-oto source files ---
+          foreach ($dir in @("actions","config","error-types","scripts","server","utils")) {
+            Copy-Item -Path "densha-oto\$dir" -Destination "$otoDir\$dir" -Recurse -Force
+          }
+          Copy-Item -Path "densha-oto\package.json" -Destination "$otoDir\package.json" -Force
+          Copy-Item -Path "densha-oto\node_modules"  -Destination "$otoDir\node_modules"  -Recurse -Force
+
+          # --- portable node.exe ---
+          Copy-Item -Path "$env:RUNNER_TEMP\node.exe" -Destination "$otoDir\node.exe" -Force
+
+          # --- densha-ui portable exe ---
+          $uiExe = Get-ChildItem -Path "densha-ui\dist" -Filter "*.exe" -Recurse |
+                   Where-Object { $_.Name -notmatch "Setup" } |
+                   Select-Object -First 1
+          if (-not $uiExe) { Write-Error "densha-ui portable exe bulunamadi!"; exit 1 }
+          Copy-Item -Path $uiExe.FullName -Destination "$appsDir\densha-ui.exe" -Force
+          Write-Host "densha-ui.exe: $($uiExe.FullName)"
+
+          # --- Playwright browsers ---
+          $pwBrowsersPath = "$env:LOCALAPPDATA\ms-playwright"
+          if (-not (Test-Path $pwBrowsersPath)) {
+            # On GitHub Actions it might be under a different path
+            $pwBrowsersPath = "$env:USERPROFILE\AppData\Local\ms-playwright"
+          }
+          if (Test-Path $pwBrowsersPath) {
+            Copy-Item -Path $pwBrowsersPath -Destination $browsersDir -Recurse -Force
+            Write-Host "Playwright browsers copied from: $pwBrowsersPath"
+          } else {
+            Write-Error "Playwright browsers bulunamadi: $pwBrowsersPath"
+            exit 1
+          }
+
+          Write-Host "Bundle layout olusturuldu: $bundleRoot"
+
+      # ── Create ZIP ─────────────────────────────────────────────────────────────
+      - name: Create ZIP
+        shell: pwsh
+        run: |
+          Compress-Archive -Path "bundle-root\*" -DestinationPath "Densha-Windows.zip"
+          Write-Host "ZIP olusturuldu: Densha-Windows.zip"
+
+      # ── Create GitHub Release and upload ZIP ───────────────────────────────────
+      - name: Resolve tag name
+        id: tag
+        shell: pwsh
+        run: |
+          $t = if ("${{ github.ref_name }}" -match "^v") { "${{ github.ref_name }}" } else { "${{ github.event.inputs.tag }}" }
+          echo "value=$t" >> $env:GITHUB_OUTPUT
+
+      - name: Create Release and upload ZIP
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.value }}
+          name: "Densha ${{ steps.tag.outputs.value }}"
+          body: |
+            ## Kurulum
+
+            1. ZIP dosyasını indirin
+            2. İstediğiniz bir klasöre çıkarın
+            3. `Densha.exe` dosyasını çift tıklayın
+
+            Ekstra bir kurulum gerekmez.
+          files: Densha-Windows.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
