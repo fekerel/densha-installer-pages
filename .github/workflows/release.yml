@@ -110,6 +110,9 @@ jobs:
           Copy-Item -Path "densha-oto\package.json" -Destination "$otoDir\package.json" -Force
           Copy-Item -Path "densha-oto\node_modules"  -Destination "$otoDir\node_modules"  -Recurse -Force
 
+          # --- .env with shared service URL ---
+          Set-Content -Path "$otoDir\.env" -Value "BOT_HANDLER_URL='https://densha-bot-handler-721944224897.europe-west1.run.app'"
+
           # --- portable node.exe ---
           Copy-Item -Path "$env:RUNNER_TEMP\node.exe" -Destination "$otoDir\node.exe" -Force
 
