@@ -37,13 +37,13 @@ def main() -> int:
         env["PLAYWRIGHT_BUNDLED_BROWSER_DIR"] = browsers_dir
 
     try:
-        subprocess.Popen([oto_exe], cwd=apps_dir, env=env)
+        subprocess.Popen([oto_exe], cwd=root, env=env)
     except Exception as exc:
         show_error(f"densha-oto.exe baslatilamadi.\n\n{exc}")
         return 1
 
     try:
-        subprocess.Popen([ui_exe], cwd=apps_dir, env=env)
+        subprocess.Popen([ui_exe], cwd=root, env=env)
     except Exception as exc:
         show_error(f"densha-ui.exe baslatilamadi.\n\n{exc}")
         return 1
