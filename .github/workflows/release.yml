@@ -9,6 +9,14 @@ on:
       tag:
         description: 'Release tag (e.g. v1.0.0)'
         required: true
+      oto_branch:
+        description: 'densha-oto branch (default: release)'
+        required: false
+        default: 'release'
+      ui_branch:
+        description: 'densha-ui branch (default: release)'
+        required: false
+        default: 'release'
 
 jobs:
   build-windows:
@@ -25,7 +33,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: fekerel/densha-oto
-          ref: release
+          ref: ${{ github.event.inputs.oto_branch || 'release' }}
           path: densha-oto
           token: ${{ secrets.GH_PAT }}
 
@@ -33,7 +41,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: fekerel/densha-ui
-          ref: release
+          ref: ${{ github.event.inputs.ui_branch || 'release' }}
           path: densha-ui
           token: ${{ secrets.GH_PAT }}
 
